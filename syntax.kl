@@ -1,0 +1,44 @@
+type BinOp
+  = AddOp
+  | SubOp
+  | MultOp
+  | DivOp
+  | ModOp
+  | AndOp
+  | OrOp
+  | EqOp
+  | NotEqOp
+  | LessThanOp
+  | LessThanEqOp
+  | GreaterThanOp
+  | GreaterThanEqOp
+
+type UnaryOp = 
+  | NotOp
+  | NegateOp
+  
+type Type
+  = NumberType
+  | BoolType
+  | StringType
+  | NullType
+  | FuncType Type Type
+  | RecordType String Type RecordType
+  
+type Expr 
+  = NumberExpr Float 
+  | BoolExpr Bool
+  | StringExpr String
+  | NullExpr 
+  | VarExpr String
+  | LetExpr String (Option Type) Expr Expr // Name Type Binding EverythingElse
+  | AssignExpr String Expr
+  | BinExpr BinOp Expr Expr // Operation Left Right
+  | UnaryExpr UnaryOp Expr
+  | IfExpr Expr Expr Expr // Cond TruePath FalsePath
+  | WhileExpr Expr Expr // Cond Loop 
+  | BlockExpr [Expr] // Many Expressions about
+  | FnExpr String Expr
+  | AppExpr Expr Expr
+  | RecordExpr String Expr RecordExpr
+
