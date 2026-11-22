@@ -11,34 +11,46 @@ type BinOp
   | LessThanOp
   | LessThanEqOp
   | GreaterThanOp
-  | GreaterThanEqOp
+  | GreaterThanEqOp;
 
-type UnaryOp = 
-  | NotOp
-  | NegateOp
-  
+type UnaryOp
+  = NotOp
+  | NegateOp;
+
 type Type
   = NumberType
   | BoolType
   | StringType
   | NullType
-  | FuncType Type Type
-  | RecordType String Type RecordType
+  | FuncType [Type] Type
+  | RecordType [TypeField];
   
+type TypeField 
+  = TypeField String Type;
+
+type Parameter 
+  = Parameter String Type;
+
+type RecordField 
+  = RecordField String Expr;
+
 type Expr 
   = NumberExpr Float 
   | BoolExpr Bool
   | StringExpr String
   | NullExpr 
   | VarExpr String
-  | LetExpr String (Option Type) Expr Expr // Name Type Binding EverythingElse
   | AssignExpr String Expr
   | BinExpr BinOp Expr Expr // Operation Left Right
   | UnaryExpr UnaryOp Expr
-  | IfExpr Expr Expr Expr // Cond TruePath FalsePath
-  | WhileExpr Expr Expr // Cond Loop 
-  | BlockExpr [Expr] // Many Expressions about
-  | FnExpr String Expr
-  | AppExpr Expr Expr
-  | RecordExpr String Expr RecordExpr
+  | FnExpr [Parameter] Type Expr // inputParams(may be mutliple) retType func 
+  | AppExpr Expr [Expr] // may be multiple arguments
+  | RecordExpr [RecordField]
+  | FieldExpr Expr String;
 
+type Stmt
+  = LetStmt String (Option Type) Expr // Name Type Binding Binded
+  | IfStmt Expr Stmt (Option Stmt) // Cond TruePath FalsePath
+  | WhileStmt Expr Stmt // Cond Loop 
+  | BlockStmt [Expr] // Many Expressions about
+  | ExprStmt Expr;
