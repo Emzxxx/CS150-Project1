@@ -1,0 +1,70 @@
+include "syntax.kl";
+
+type TypeEnv 
+  = TypeEnv [[(String, Type)]];
+
+type TypeError 
+  = TypeError String
+
+let emptyEnv: TypeEnv =
+  TypeEnv [[]];
+
+// 3A
+
+let pushScope (env: TypeEnv): TypeEnv =
+  match env {
+    TypeEnv scopes =>
+      TypeEnv ([] :: scopes);
+  };
+
+let popScope (env: TypeEnv): TypeEnv =
+  match env {
+    TypeEnv scopes =>
+      match scopes {
+        [] => env;
+        _ :: rest => TypeEnv rest;
+      };
+  };
+
+let lookupLocal (name: String) (scope: [(String, Type)]): Option Type =
+  match scope {
+    [] => None;
+    (key, typ) :: rest =>
+      if key == name then
+        Some typ
+      else
+        lookupLocal name rest;
+  };
+
+let lookupScopes (name: String) (scopes: [(String, Type)]): Option Type =
+  match scopes {
+    [] => None;
+    scope :: rest =>
+      match lookupLocal name scope {
+        Some typ => Some typ;
+        None => lookupScopes name rest;
+      };
+  };
+
+let lookupType (name: String) (env: TypeEnv): Option Type =
+  match env {
+    TypeEnv scopes =>
+      lookupScopes name scopes;
+  };
+
+let insertType (name: String) (typ: Type) (env: TypeEnv): Result TypeEnv TypeError = 
+  match env {
+    TypeEnv scopes =>
+      match scopes {
+        [] => 
+          Err (TypeError "No scope");
+        scope :: rest =>
+          match lookupLocal name scope {
+            Some _ =>
+              Err (TypeError "Duplicate");
+            None =>
+              Ok (TypeEnv (((name, typ) :: scope) :: rest))l
+          
+          };
+      };
+  };
