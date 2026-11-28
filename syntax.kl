@@ -34,6 +34,9 @@ type Parameter
 type RecordField 
   = RecordField String Expr;
 
+type Program
+  = Program [Stmt]
+
 type Expr 
   = NumberExpr Float 
   | BoolExpr Bool
@@ -52,5 +55,5 @@ type Stmt
   = LetStmt String (Option Type) Expr // Name Type Binding Binded
   | IfStmt Expr Stmt (Option Stmt) // Cond TruePath FalsePath
   | WhileStmt Expr Stmt // Cond Loop 
-  | BlockStmt [Expr] // Many Expressions about
+  | BlockStmt [Stmt] // Many Expressions about
   | ExprStmt Expr;
